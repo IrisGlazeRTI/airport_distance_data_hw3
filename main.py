@@ -11,7 +11,7 @@ import matplotlib.colors as mcolors
 # Function to generate a random number based on another value
 def generate_random_based_on_value(row):
     multiplier = 0.3
-    return np.random.randint(-multiplier * row['DISTANCE'], multiplier * row['DISTANCE'] + 1)
+    return np.random.randint(0, multiplier * row['DISTANCE'] + 1)
 
 if __name__ == '__main__':
 
@@ -21,6 +21,8 @@ if __name__ == '__main__':
     original_input_file_path = 'Distance_of_All_Airports_20240308_125630.csv'
     full_revised_file_dir = "output"
     full_revised_file_path = full_revised_file_dir + "/full_airport_distances_revised.csv"
+    # alternative is REVISED_DISTANCE
+    columns_to_export_arr = ['ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_SEQ_ID', 'REVISED_DISTANCE', 'LONGITUDE_ORIGIN', 'LATITUDE_ORIGIN', 'LONGITUDE_DEST', 'LATITUDE_DEST']
 
     if not os.path.exists(full_revised_file_path) or True:
         # Load the CSV data into a pandas DataFrame
@@ -73,7 +75,7 @@ if __name__ == '__main__':
 
         # Export the DataFrame to a CSV file
         os.makedirs(full_revised_file_dir, exist_ok=True)
-        df = df[['ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_SEQ_ID', 'REVISED_DISTANCE', 'LATITUDE_ORIGIN', 'LONGITUDE_ORIGIN', 'LATITUDE_DEST', 'LONGITUDE_DEST']]
+        df = df[columns_to_export_arr]
         df.to_csv(full_revised_file_path, index=False)  # Set index=False if you don't want to include the index in the CSV
         # If you're running this in a Jupyter notebook or similar environment and want confirmation, you can print a message
         print(f'DataFrame exported to {full_revised_file_path}')
@@ -94,7 +96,7 @@ if __name__ == '__main__':
         else:
             valid_sample_values = set(unique_values)
         filtered_df = full_df[full_df['ORIGIN_AIRPORT_SEQ_ID'].isin(valid_sample_values) & full_df['DEST_AIRPORT_SEQ_ID'].isin(valid_sample_values)]
-        filtered_df = filtered_df[['ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_SEQ_ID', 'REVISED_DISTANCE', 'LATITUDE_ORIGIN', 'LONGITUDE_ORIGIN', 'LATITUDE_DEST', 'LONGITUDE_DEST']]
+        filtered_df = filtered_df[columns_to_export_arr]
         print(len(filtered_df['ORIGIN_AIRPORT_SEQ_ID'].unique()))
         print(len(filtered_df['DEST_AIRPORT_SEQ_ID'].unique()))
         os.makedirs(full_revised_file_dir, exist_ok=True)
