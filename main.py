@@ -2,16 +2,34 @@ import pandas as pd
 import numpy as np
 import os
 
-import networkx as nx
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-
 # https://www.transtats.bts.gov/Distance.aspx
 
 # Function to generate a random number based on another value
 def generate_random_based_on_value(row):
     multiplier = 0.3
     return np.random.randint(0, multiplier * row['DISTANCE'] + 1)
+
+def prepare_distances_data_df(original_input_file_path):
+    # Load the CSV data for the distances between airports into a pandas DataFrame.
+    df = pd.read_csv(original_input_file_path)
+    # Rename some columns.
+    df.rename(
+        columns={'DISTANCE IN MILES': 'DISTANCE'},
+        inplace=True)
+    # Exclude rows where the source and destination airports are the same.
+    df = df[df['ORIGIN_AIRPORT_SEQ_ID'] != df['DEST_AIRPORT_SEQ_ID']]
+    # Convert string representing the distance to an integer.
+    df['DISTANCE'] = df['DISTANCE'].astype(int)
+    return df
+
+def prepare_airport_facilities_df(aviation_facilities_input_file_path):
+    # Load the CSV data for individual airport data (which includes latitude and longitude) into a pandas DataFrame.
+    facilities_df = pd.read_csv(aviation_facilities_input_file_path)
+    # Select a subset of the columns to use.
+    facilities_df = facilities_df[
+        ['AIRPORT_SEQ_ID', 'LATITUDE', 'LONGITUDE', 'DISPLAY_AIRPORT_CITY_NAME_FULL', 'AIRPORT_STATE_NAME',
+         'AIRPORT_COUNTRY_NAME', 'AIRPORT']]
+    return facilities_df
 
 if __name__ == '__main__':
 
@@ -25,16 +43,8 @@ if __name__ == '__main__':
     columns_to_export_arr = ['ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_SEQ_ID', 'REVISED_DISTANCE', 'LONGITUDE_ORIGIN', 'LATITUDE_ORIGIN', 'LONGITUDE_DEST', 'LATITUDE_DEST']
 
     if not os.path.exists(full_revised_file_path) or True:
-        # Load the CSV data into a pandas DataFrame
-        df = pd.read_csv(original_input_file_path)
-        facilities_df = pd.read_csv(aviation_facilities_input_file_path)
-        facilities_df = facilities_df[['AIRPORT_SEQ_ID', 'LATITUDE', 'LONGITUDE', 'DISPLAY_AIRPORT_CITY_NAME_FULL', 'AIRPORT_STATE_NAME', 'AIRPORT_COUNTRY_NAME', 'AIRPORT']]
-
-        df.rename(
-            columns={'DISTANCE IN MILES': 'DISTANCE'},
-            inplace=True)
-        df = df[df['ORIGIN_AIRPORT_SEQ_ID'] != df['DEST_AIRPORT_SEQ_ID']]
-        df['DISTANCE'] = df['DISTANCE'].astype(int)
+        df = prepare_distances_data_df(original_input_file_path)
+        facilities_df = prepare_airport_facilities_df(aviation_facilities_input_file_path)
 
         # Display the first few rows of the DataFrame to confirm successful loading
         #print(df.head(20))
