@@ -5,9 +5,8 @@ import os
 # https://www.transtats.bts.gov/Distance.aspx
 
 # Function to generate a random number based on another value
-def generate_random_based_on_value(row):
-    multiplier = 0.3
-    return np.random.randint(0, multiplier * row['DISTANCE'] + 1)
+def generate_random_based_on_value(row, column_name, multiplier):
+    return np.random.randint(0, multiplier * row[column_name] + 1)
 
 def prepare_distances_data_df(original_input_file_path):
     # Load the CSV data for the distances between airports into a pandas DataFrame.
@@ -72,7 +71,7 @@ if __name__ == '__main__':
 
         # 388384 -> 388380
 
-        df_w_coords['RANDOM_VALUE'] = df_w_coords.apply(generate_random_based_on_value, axis=1).astype(int)
+        df_w_coords['RANDOM_VALUE'] = df_w_coords.apply(lambda row: generate_random_based_on_value(row, 'DISTANCE', 0.3), axis=1).astype(int)
         df_w_coords['REVISED_DISTANCE'] = (df_w_coords['DISTANCE'] + df_w_coords['RANDOM_VALUE']).clip(lower=0).astype(int)
 
         #sorted_df = df.sort_values(by='DISTANCE', ascending=True)
