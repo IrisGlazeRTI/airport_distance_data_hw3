@@ -1,13 +1,15 @@
+# Import necessary libraries
 import pandas as pd
 import numpy as np
 import os
 
-# https://www.transtats.bts.gov/Distance.aspx
+# Input data files source: https://www.transtats.bts.gov/Distance.aspx
 
-# Function to generate a random number based on another value
+# Define the function to generate random value based on a column value and multiplier
 def generate_random_based_on_value(row, column_name, multiplier):
     return np.random.randint(0, multiplier * row[column_name] + 1)
 
+# Prepare the between airport distances dataframe.
 def prepare_distances_data_df(original_input_file_path):
     # Load the CSV data for the distances between airports into a pandas DataFrame.
     df = pd.read_csv(original_input_file_path)
@@ -21,6 +23,7 @@ def prepare_distances_data_df(original_input_file_path):
     df['DISTANCE'] = df['DISTANCE'].astype(int)
     return df
 
+# Prepare the airport facilities dataframe.
 def prepare_airport_facilities_df(aviation_facilities_input_file_path):
     # Load the CSV data for individual airport data (which includes latitude and longitude) into a pandas DataFrame.
     airport_facilities_df = pd.read_csv(aviation_facilities_input_file_path)
@@ -33,6 +36,7 @@ def prepare_airport_facilities_df(aviation_facilities_input_file_path):
 
     return airport_facilities_df
 
+# Define the main function
 if __name__ == '__main__':
 
     aviation_facilities_input_file_path = 'T_MASTER_CORD.csv'
