@@ -1,3 +1,22 @@
+# Code Sample, by Iris Glaze
+
+## Inputs, outputs, and requirements
+Input files:
+- **T_MASTER_CORD.csv**: Airport latitude and longitude, plus other details such as airport city and country
+- **Distance_of_All_Airports_20240308_125630.csv**: Distances between airports.
+
+Output files:
+- **output/full_airport_distances_revised.csv**: Full output file which adds latitude and longitude data to distance data.
+- **output/subset_airport_distances_revised.csv**: Like the full airport distances output file, but only includes a small random subset of the airports involved.
+- **process.log**: A small log file that tells you if and when output is being written to files.
+
+Dependencies file:
+- requirements.txt
+  - Use pip to install dependencies.
+
+Python version: 3.12.4
+
+## Instructions from email, checked off and explained
 Below are the required components of your code sample. We will need to see successful demonstration of these data manipulation tasks in whichever programming language you feel best represents your coding ability. We are expecting these to be done in SAS, Stata, Python, or R but if you are planning to use another language, please let us know ASAP. If you have Python knowledge, we strongly recommend submitting in Python.
  
 - [x] Reading in data or sets of data in a format other than the programming language’s default file format (e.g., read-in data from Excel or flat text file into Stata)
@@ -26,3 +45,10 @@ Below are the required components of your code sample. We will need to see succe
   - Results of distances between airports with their latitudes and longitudes inclues are output into two .csv files under the output folder. 
 
 You are welcome to use existing code that was developed for another purpose, as long as it was created by you personally and demonstrates all of the skills listed above. If you need to modify existing code to include additional logic to fit this exercise, that is okay. If you are able to submit a log showing a successful run of the entire code set, that would be ideal but we understand that in some cases, this may not be possible. We will be checking for syntax errors in addition to general demonstration of these data manipulation concepts. It would be ideal for this code sample to be something you have completed as part of your work at RTI but again, we understand that this may not be possible. Please do not send us any accompanying datasets or output that contain project-sensitive information, PHI, PII, etc.
+
+## Background for this code sample:
+I build upon some code that was a piece of a grad school assignment.
+The initial purpose of this code was to prepare data for input to a C++ assignment that runs a shortest path heuristic algorithm on a graph data structure.
+
+I chose it over RTI work examples since it only uses one Python file and is a relatively small program that can be reviewed more easily.
+Furthermore, there are no privacy related issues with sharing the data (it is publicly available input data).
