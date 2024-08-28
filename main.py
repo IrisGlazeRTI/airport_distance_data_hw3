@@ -48,7 +48,7 @@ if __name__ == '__main__':
     # alternative is REVISED_DISTANCE
     columns_to_export_arr = ['ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_SEQ_ID', 'REVISED_DISTANCE', 'LONGITUDE_ORIGIN', 'LATITUDE_ORIGIN', 'LONGITUDE_DEST', 'LATITUDE_DEST']
 
-    if not os.path.exists(full_revised_file_path) or True:
+    if not os.path.exists(full_revised_file_path):
         df = prepare_distances_data_df(original_input_file_path)
         facilities_df = prepare_airport_facilities_df(aviation_facilities_input_file_path)
 
