@@ -20,7 +20,8 @@ Below are the required components of your code sample. We will need to see succe
   - If statements make sections of code only run if the "goal" output file doesn't exist yet.
 - [x] Merging and appending data  
   - Merge airport distance data with individual airport more detailed data.
-- [ ] Addressing repetitive processes (e.g., loops) 
+- [x] Addressing repetitive processes (e.g., loops)
+  - For loops to rename some columns. There are other ways to do this, but I wished to demo loops.
 - [x] Exporting data to a format other than the programming language’s default file format (e.g., data in Stata exported to Excel, CSV, delimited, etc.) 
   - Results of distances between airports with their latitudes and longitudes inclues are output into two .csv files under the output folder. 
 

@@ -37,6 +37,7 @@ def prepare_airport_facilities_df(aviation_facilities_input_file_path):
 
     return airport_facilities_df
 
+# Print some frequency values and summary statistics.
 def validate_data(df):
     # Print summary statistics
     print("Summary Statistics:")
@@ -49,6 +50,7 @@ def validate_data(df):
     print("\nFrequency of unique values in 'DEST_AIRPORT_SEQ_ID':")
     print(df['DEST_AIRPORT_SEQ_ID'].value_counts())
 
+# Frequency histogram for specified dataframe and column name.
 def plot_histogram(df, column_name):
     plt.figure(figsize=(10, 6))
     plt.hist(df[column_name], bins=30, edgecolor='k', alpha=0.7)
@@ -68,32 +70,25 @@ if __name__ == '__main__':
     full_revised_file_dir = "output"
     full_revised_file_path = full_revised_file_dir + "/full_airport_distances_revised.csv"
     # alternative is REVISED_DISTANCE
-    columns_to_export_arr = ['ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_SEQ_ID', 'DISTANCE', 'REVISED_DISTANCE', 'LONGITUDE_ORIGIN', 'LATITUDE_ORIGIN', 'LONGITUDE_DEST', 'LATITUDE_DEST']
+    columns_to_export_arr = ['ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_SEQ_ID', 'DISTANCE', 'REVISED_DISTANCE', 'LONGITUDE_ORIGIN', 'LATITUDE_ORIGIN', 'LONGITUDE_DEST', 'LATITUDE_DEST', 'DISPLAY_AIRPORT_CITY_NAME_FULL_ORIGIN', 'AIRPORT_COUNTRY_NAME_ORIGIN', 'DISPLAY_AIRPORT_CITY_NAME_FULL_DEST', 'AIRPORT_COUNTRY_NAME_DEST']
 
     if not os.path.exists(full_revised_file_path):
         df = prepare_distances_data_df(original_input_file_path)
         facilities_df = prepare_airport_facilities_df(aviation_facilities_input_file_path)
 
-        # Display the first few rows of the DataFrame to confirm successful loading
-        #print(df.head(20))
         print(len(df))
 
-        #print(df.sort_values(by='DISTANCE', ascending=True).head(100))
-
-        unique_values_origin = df['ORIGIN_AIRPORT_SEQ_ID'].unique()
-        print(len(unique_values_origin))
-
-        unique_values_dest = df['DEST_AIRPORT_SEQ_ID'].unique()
-        print(len(unique_values_dest))
+        # Define a list of column names to rename
+        columns_to_rename = ['LATITUDE', 'LONGITUDE', 'DISPLAY_AIRPORT_CITY_NAME_FULL', 'AIRPORT_STATE_NAME', 'AIRPORT_START_DATE', 'AIRPORT_COUNTRY_NAME', 'AIRPORT']
 
         df_w_coords = pd.merge(df, facilities_df, how="inner", left_on="ORIGIN_AIRPORT_SEQ_ID", right_on="AIRPORT_SEQ_ID", suffixes=(None, "_ORIGIN"))
-        df_w_coords.rename(
-            columns={'LATITUDE': 'LATITUDE_ORIGIN', 'LONGITUDE': 'LONGITUDE_ORIGIN', 'DISPLAY_AIRPORT_CITY_NAME_FULL': 'DISPLAY_AIRPORT_CITY_NAME_FULL_ORIGIN', 'AIRPORT_COUNTRY_NAME': 'AIRPORT_COUNTRY_NAME_ORIGIN'},
-            inplace=True)
+        # Use a loop to rename columns by appending '_ORIGIN'
+        for column in columns_to_rename:
+            df_w_coords.rename(columns={column: f'{column}_ORIGIN'}, inplace=True)
         df_w_coords = pd.merge(df_w_coords, facilities_df, how="inner", left_on="DEST_AIRPORT_SEQ_ID", right_on="AIRPORT_SEQ_ID", suffixes=(None, '_DEST'))
-        df_w_coords.rename(
-            columns={'LATITUDE': 'LATITUDE_DEST', 'LONGITUDE': 'LONGITUDE_DEST', 'DISPLAY_AIRPORT_CITY_NAME_FULL': 'DISPLAY_AIRPORT_CITY_NAME_FULL_DEST', 'AIRPORT_COUNTRY_NAME': 'AIRPORT_COUNTRY_NAME_DEST'},
-            inplace=True)
+        # Use a loop to rename columns by appending '_DEST'
+        for column in columns_to_rename:
+            df_w_coords.rename(columns={column: f'{column}_DEST'}, inplace=True)
 
         # Validate data
         validate_data(df_w_coords)
@@ -107,18 +102,15 @@ if __name__ == '__main__':
         # Plot histogram of the 'REVISED_DISTANCE' column
         plot_histogram(df_w_coords, 'REVISED_DISTANCE')
 
-        #sorted_df = df.sort_values(by='DISTANCE', ascending=True)
+        # Select columns to keep for full results dataframe.
+        df_w_coords = df_w_coords[columns_to_export_arr]
 
-        # Display the sorted DataFrame to confirm ordering
-        #print(sorted_df.head(200))
-
-        print(df_w_coords)
-
-        #print(df.head(100))
+        print("Printing first 15 rows...")
+        print(df_w_coords.head(15))
 
         # Export the DataFrame to a CSV file
         os.makedirs(full_revised_file_dir, exist_ok=True)
-        df_w_coords = df_w_coords[columns_to_export_arr]
+
         df_w_coords.to_csv(full_revised_file_path, index=False)  # Set index=False if you don't want to include the index in the CSV
         # If you're running this in a Jupyter notebook or similar environment and want confirmation, you can print a message
         print(f'DataFrame exported to {full_revised_file_path}')
@@ -126,14 +118,16 @@ if __name__ == '__main__':
         # The file exists
         print(f'File already exists: {full_revised_file_path}')
 
+    # Takes a random subset sample while maintaining the integrity of the graph structure.
+    # Essentially, this means taking a subset of the airports, but keeping all distances associated with the airports sample.
     subset_airport_distance_file_path = full_revised_file_dir + "/subset_airport_distances_revised.csv"
     if os.path.exists(full_revised_file_path) and not os.path.exists(subset_airport_distance_file_path):
         full_df = pd.read_csv(full_revised_file_path)
         unique_values = pd.concat([full_df['ORIGIN_AIRPORT_SEQ_ID'], full_df['DEST_AIRPORT_SEQ_ID']]).unique()
-        sample_size = 40
+        sample_size_max = 40
         valid_sample_values = {}
-        if len(unique_values) >= sample_size:
-            random_sample = np.random.choice(unique_values, size=sample_size, replace=False)
+        if len(unique_values) >= sample_size_max:
+            random_sample = np.random.choice(unique_values, size=sample_size_max, replace=False)
             random_sample_set = set(random_sample)
             valid_sample_values = random_sample_set
         else:
