@@ -2,7 +2,8 @@ Below are the required components of your code sample. We will need to see succe
  
 - [x] Reading in data or sets of data in a format other than the programming language’s default file format (e.g., read-in data from Excel or flat text file into Stata)
   - Reads in two .csv files, T_MASTER_CORD.csv and Distance_of_All_Airports_20240308_125630.csv.
-- [ ] Validating data by performing summaries, frequencies, and/or tabulations 
+- [x] Validating data by performing summaries, frequencies, and/or tabulations 
+  - Frequencies for the airports in the distances dataframe, summaries for the end result (full airport distances), and histograms for the distances are printed out.
 - [x] Changing the format of data (e.g., converting character date value to the programming language’s date, convert characters/strings to numeric, etc.) 
   - Convert string representing the distance to an integer.
   ```python
