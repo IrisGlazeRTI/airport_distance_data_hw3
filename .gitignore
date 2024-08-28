@@ -1,3 +1,5 @@
 .idea
 temp/*
-./output/full_airport_distances_revised.csv
+./output/*
+process.log
+
