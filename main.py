@@ -68,7 +68,7 @@ if __name__ == '__main__':
     # Specify the path to your CSV file
     original_input_file_path = 'Distance_of_All_Airports_20240308_125630.csv'
     full_revised_file_dir = "output"
-    full_revised_file_path = full_revised_file_dir + "/full_airport_distances_revised.csv"
+    full_revised_file_path = os.path.join(full_revised_file_dir, "full_airport_distances_revised.csv")
     # alternative is REVISED_DISTANCE
     columns_to_export_arr = ['ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_SEQ_ID', 'DISTANCE', 'REVISED_DISTANCE', 'LONGITUDE_ORIGIN', 'LATITUDE_ORIGIN', 'LONGITUDE_DEST', 'LATITUDE_DEST', 'DISPLAY_AIRPORT_CITY_NAME_FULL_ORIGIN', 'AIRPORT_COUNTRY_NAME_ORIGIN', 'DISPLAY_AIRPORT_CITY_NAME_FULL_DEST', 'AIRPORT_COUNTRY_NAME_DEST']
 
@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
     # Takes a random subset sample while maintaining the integrity of the graph structure.
     # Essentially, this means taking a subset of the airports, but keeping all distances associated with the airports sample.
-    subset_airport_distance_file_path = full_revised_file_dir + "/subset_airport_distances_revised.csv"
+    subset_airport_distance_file_path = os.path.join(full_revised_file_dir, "subset_airport_distances_revised.csv")
     if os.path.exists(full_revised_file_path) and not os.path.exists(subset_airport_distance_file_path):
         full_df = pd.read_csv(full_revised_file_path)
         unique_values = pd.concat([full_df['ORIGIN_AIRPORT_SEQ_ID'], full_df['DEST_AIRPORT_SEQ_ID']]).unique()
