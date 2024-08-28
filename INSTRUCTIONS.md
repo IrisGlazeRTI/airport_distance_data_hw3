@@ -12,8 +12,8 @@ Below are the required components of your code sample. We will need to see succe
   - Calculating a "revised distance" column that is calculated from both the original distance value and a scaled random value. 
     The scaled random value can be a maximum of 30% of the original distance, and a minimum of zero.
   ```python
-  df['RANDOM_VALUE'] = df.apply(generate_random_based_on_value, axis=1).astype(int)
-  df['REVISED_DISTANCE'] = (df['DISTANCE'] + df['RANDOM_VALUE']).clip(lower=0).astype(int)
+  df_w_coords['RANDOM_VALUE'] = df_w_coords.apply(lambda row: generate_random_based_on_value(row, 'DISTANCE', 0.3), axis=1).astype(int)
+  df_w_coords['REVISED_DISTANCE'] = (df_w_coords['DISTANCE'] + df_w_coords['RANDOM_VALUE']).clip(lower=0).astype(int)
   ```
 - [x] Using conditional logic 
   - If statements make sections of code only run if the "goal" output file doesn't exist yet.
