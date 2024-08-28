@@ -24,12 +24,15 @@ def prepare_distances_data_df(original_input_file_path):
 
 def prepare_airport_facilities_df(aviation_facilities_input_file_path):
     # Load the CSV data for individual airport data (which includes latitude and longitude) into a pandas DataFrame.
-    facilities_df = pd.read_csv(aviation_facilities_input_file_path)
+    airport_facilities_df = pd.read_csv(aviation_facilities_input_file_path)
     # Select a subset of the columns to use.
-    facilities_df = facilities_df[
-        ['AIRPORT_SEQ_ID', 'LATITUDE', 'LONGITUDE', 'DISPLAY_AIRPORT_CITY_NAME_FULL', 'AIRPORT_STATE_NAME',
+    airport_facilities_df = airport_facilities_df[
+        ['AIRPORT_SEQ_ID', 'AIRPORT_ID', 'LATITUDE', 'LONGITUDE', 'DISPLAY_AIRPORT_CITY_NAME_FULL', 'AIRPORT_STATE_NAME', 'AIRPORT_START_DATE',
          'AIRPORT_COUNTRY_NAME', 'AIRPORT']]
-    return facilities_df
+    airport_facilities_df = airport_facilities_df.sort_values(by=['AIRPORT_ID', 'AIRPORT_START_DATE'], ascending=[True, False])
+    airport_facilities_df = airport_facilities_df.drop_duplicates(subset='AIRPORT_ID', keep='first')
+
+    return airport_facilities_df
 
 if __name__ == '__main__':
 
@@ -67,26 +70,24 @@ if __name__ == '__main__':
             columns={'LATITUDE': 'LATITUDE_DEST', 'LONGITUDE': 'LONGITUDE_DEST', 'DISPLAY_AIRPORT_CITY_NAME_FULL': 'DISPLAY_AIRPORT_CITY_NAME_FULL_DEST', 'AIRPORT_COUNTRY_NAME': 'AIRPORT_COUNTRY_NAME_DEST'},
             inplace=True)
 
-        df = df_w_coords
-
         # 388384 -> 388380
 
-        df['RANDOM_VALUE'] = df.apply(generate_random_based_on_value, axis=1).astype(int)
-        df['REVISED_DISTANCE'] = (df['DISTANCE'] + df['RANDOM_VALUE']).clip(lower=0).astype(int)
+        df_w_coords['RANDOM_VALUE'] = df_w_coords.apply(generate_random_based_on_value, axis=1).astype(int)
+        df_w_coords['REVISED_DISTANCE'] = (df_w_coords['DISTANCE'] + df_w_coords['RANDOM_VALUE']).clip(lower=0).astype(int)
 
         #sorted_df = df.sort_values(by='DISTANCE', ascending=True)
 
         # Display the sorted DataFrame to confirm ordering
         #print(sorted_df.head(200))
 
-        print(df)
+        print(df_w_coords)
 
         #print(df.head(100))
 
         # Export the DataFrame to a CSV file
         os.makedirs(full_revised_file_dir, exist_ok=True)
-        df = df[columns_to_export_arr]
-        df.to_csv(full_revised_file_path, index=False)  # Set index=False if you don't want to include the index in the CSV
+        df_w_coords = df_w_coords[columns_to_export_arr]
+        df_w_coords.to_csv(full_revised_file_path, index=False)  # Set index=False if you don't want to include the index in the CSV
         # If you're running this in a Jupyter notebook or similar environment and want confirmation, you can print a message
         print(f'DataFrame exported to {full_revised_file_path}')
     else:
