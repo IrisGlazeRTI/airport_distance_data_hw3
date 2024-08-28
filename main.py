@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 # Input data files source: https://www.transtats.bts.gov/Distance.aspx
 
@@ -60,6 +61,11 @@ def plot_histogram(df, column_name):
     plt.grid(True)
     plt.show()
 
+# Define a function to log messages
+def log_message(message, log_file='process.log'):
+    with open(log_file, 'a') as f:
+        f.write(f'{datetime.now()}: {message}\n')
+
 # Define the main function
 if __name__ == '__main__':
 
@@ -114,9 +120,11 @@ if __name__ == '__main__':
         df_w_coords.to_csv(full_revised_file_path, index=False)  # Set index=False if you don't want to include the index in the CSV
         # If you're running this in a Jupyter notebook or similar environment and want confirmation, you can print a message
         print(f'DataFrame exported to {full_revised_file_path}')
+        log_message(f'DataFrame exported to {full_revised_file_path}')
     else:
         # The file exists
         print(f'File already exists: {full_revised_file_path}')
+        log_message(f'File {full_revised_file_path} already exists. Delete file and rerun code to recreate.')
 
     # Takes a random subset sample while maintaining the integrity of the graph structure.
     # Essentially, this means taking a subset of the airports, but keeping all distances associated with the airports sample.
@@ -140,6 +148,8 @@ if __name__ == '__main__':
         print(len(filtered_df['DEST_AIRPORT_SEQ_ID'].unique()))
         os.makedirs(full_revised_file_dir, exist_ok=True)
         filtered_df.to_csv(subset_airport_distance_file_path, index=False)  # Set index=False if you don't want to include the index in the CSV
+        log_message(f'DataFrame exported to {subset_airport_distance_file_path}')
     else:
         # The file exists
         print(f'File already exists: {subset_airport_distance_file_path}')
+        log_message(f'File {subset_airport_distance_file_path} already exists. Delete file and rerun code to recreate.')
